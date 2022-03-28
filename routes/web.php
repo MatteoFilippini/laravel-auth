@@ -21,6 +21,9 @@ Auth::routes();
 Route::middleware('auth')->prefix('admin')->name('admin.')->namespace('Admin')->group(function () {
     Route::get('/', 'HomeController@index')->name('home');
     Route::resource('posts', 'PostController');
+    Route::get('/{any}', function () {
+        abort('404 Not Found');
+    })->where('any', '.*');
 });
 
 // qualunque rotta non admin e non registrata |   '?' parametro opzionale
