@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class PostController extends Controller
 {
@@ -39,6 +40,17 @@ class PostController extends Controller
      */
     public function store(Request $request, Post $post)
     {
+        $request->validate(
+            [
+                'title' => ['required', 'string', Rule::unique('posts')->ignore($post->id), 'min:5', 'max:50'],
+                'content' => 'requied' | 'string',
+                'image' => 'nullable' | 'url'
+            ],
+            [
+                'title.required' => 'Il titolo è obbligatorio'
+            ]
+        );
+
         $data = $request->all();
         $data['slug'] = Str::slug($request->title, '-');
         $post = Post::create($data);
@@ -77,6 +89,17 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
+        $request->validate(
+            [
+                'title' => ['required', 'string', Rule::unique('posts')->ignore($post->id), 'min:5', 'max:50'],
+                'content' => 'requied|string',
+                'image' => 'nullable' | 'url'
+            ],
+            [
+                'title.required' => 'Il titolo è obbligatorio'
+            ]
+        );
+
         $data = $request->all();
         $data['slug'] = Str::slug($request->title, '-');
         $post->update($data);
